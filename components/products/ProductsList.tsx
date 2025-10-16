@@ -100,12 +100,12 @@ export default function ProductsList() {
           <div className="text-center py-12">
             <div className="card max-w-md mx-auto">
               <div className="card-body text-center">
-                <div className="text-6xl mb-4">⚠️</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Error al cargar productos</h3>
-                <p className="text-gray-600">{error}</p>
-                <button onClick={fetchProducts} className="btn btn-primary mt-4">
-                  Reintentar
-                </button>
+                <div className="text-6xl mb-4">🌸</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">¡Comienza agregando productos!</h3>
+                <p className="text-gray-600 mb-4">No hay productos en tu catálogo aún. Agrega tu primer producto para comenzar.</p>
+                <Link href="/admin/products/new" className="btn btn-primary">
+                  ➕ Agregar Primer Producto
+                </Link>
               </div>
             </div>
           </div>

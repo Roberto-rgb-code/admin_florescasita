@@ -65,7 +65,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
 
             {/* User Menu */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
                 <div className="w-9 h-9 bg-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm">
                   {session?.user?.email?.charAt(0).toUpperCase()}
@@ -77,6 +77,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <p className="text-xs text-gray-500">Administrador</p>
                 </div>
               </div>
+              <div className="border-l border-gray-200 h-8"></div>
               <button
                 onClick={() => signOut()}
                 className="text-sm text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all duration-200 font-medium"
