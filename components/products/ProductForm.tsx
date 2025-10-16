@@ -3,9 +3,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ImageUpload from "../ImageUpload";
+import { Product } from "@/types/product";
 
-interface Product {
-  id?: string;
+interface ProductFormProps {
+  product?: Product;
+  isEditing?: boolean;
+}
+
+interface FormData {
   title: string;
   description: string;
   price: number;
@@ -16,14 +21,9 @@ interface Product {
   badge?: string;
 }
 
-interface ProductFormProps {
-  product?: Product;
-  isEditing?: boolean;
-}
-
 export default function ProductForm({ product, isEditing = false }: ProductFormProps) {
   const router = useRouter();
-  const [formData, setFormData] = useState<Product>({
+  const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
     price: 0,
@@ -45,7 +45,16 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
 
   useEffect(() => {
     if (product) {
-      setFormData(product);
+      setFormData({
+        title: product.title,
+        description: product.description || "",
+        price: product.price,
+        stock: product.stock,
+        category: product.category || "",
+        is_active: product.is_active,
+        image_url: product.image_url || "",
+        badge: product.badge || "",
+      });
       if (product.image_url) {
         setImageUrl(product.image_url);
       }
