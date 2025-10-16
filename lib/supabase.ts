@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import { Database } from '@/types/database';
 
 // Validar que las variables de entorno estén configuradas
 if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
@@ -11,7 +10,7 @@ if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
 }
 
 // Cliente de Supabase para el frontend (público)
-export const supabase = createClient<Database>(
+export const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   {
@@ -27,7 +26,7 @@ if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
   console.warn('⚠️  SUPABASE_SERVICE_ROLE_KEY no está configurado. El admin puede tener problemas.');
 }
 
-export const supabaseAdmin = createClient<Database>(
+export const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   {
