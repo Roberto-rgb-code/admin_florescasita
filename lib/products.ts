@@ -34,17 +34,24 @@ export async function getProductById(id: string): Promise<Product | null> {
 
 // Crear un nuevo producto
 export async function createProduct(productData: ProductCreateInput): Promise<Product> {
+  const insertData = {
+    title: productData.title,
+    description: productData.description,
+    price: productData.price,
+    image_url: productData.image_url,
+    category: productData.category,
+    badge: productData.badge,
+    stock: productData.stock,
+    is_active: productData.is_active,
+    rating: 0,
+    reviews: 0,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+
   const { data, error } = await supabaseAdmin
     .from('products')
-    .insert([
-      {
-        ...productData,
-        rating: 0,
-        reviews: 0,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-    ])
+    .insert(insertData)
     .select()
     .single();
 
