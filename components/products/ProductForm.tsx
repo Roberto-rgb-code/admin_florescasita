@@ -35,8 +35,8 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string>("");
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
 
   const categories = [
     "Amor", "Cumpleaños", "Aniversario", "Condolencias", 
@@ -56,7 +56,7 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
         badge: product.badge || "",
       });
       if (product.image_url) {
-        setImageUrl(product.image_url);
+        setImageUrls([product.image_url]);
       }
     }
   }, [product]);
@@ -74,17 +74,19 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
     }
   };
 
-  const handleImageChange = (file: File | null) => {
-    setImageFile(file);
-    if (file) {
-      setImageUrl(""); // Limpiar URL si se sube archivo
+  const handleImageChange = (files: File[]) => {
+    setImageFiles(files);
+    if (files.length > 0) {
+      setImageUrls([]); // Limpiar URLs si se suben archivos
     }
   };
 
-  const handleImageUrlChange = (url: string) => {
-    setImageUrl(url);
-    setFormData(prev => ({ ...prev, image_url: url }));
-    setImageFile(null); // Limpiar archivo si se usa URL
+  const handleImageUrlChange = (urls: string[]) => {
+    setImageUrls(urls);
+    if (urls.length > 0) {
+      setFormData(prev => ({ ...prev, image_url: urls[0] }));
+    }
+    setImageFiles([]); // Limpiar archivos si se usan URLs
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,12 +108,15 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
         formDataToSend.append("badge", formData.badge);
       }
 
-      // Si hay archivo, enviarlo
-      if (imageFile) {
-        formDataToSend.append("image", imageFile);
-      } else if (imageUrl) {
-        // Si hay URL pero no archivo, enviar la URL
-        formDataToSend.append("image_url", imageUrl);
+      // Si hay archivos, enviarlos
+      if (imageFiles.length > 0) {
+        imageFiles.forEach((file, index) => {
+          formDataToSend.append(`image_${index}`, file);
+        });
+        formDataToSend.append("image_count", imageFiles.length.toString());
+      } else if (imageUrls.length > 0) {
+        // Si hay URLs pero no archivos, enviar las URLs
+        formDataToSend.append("image_url", imageUrls[0]);
       }
 
       const url = isEditing ? `/api/products/${product?.id}` : "/api/products";
@@ -292,15 +297,16 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
               </label>
             </div>
 
-            {/* Imagen */}
+            {/* Imágenes */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Imagen del Producto
+                Imágenes del Producto
               </label>
               <ImageUpload
                 onImageChange={handleImageChange}
                 onImageUrlChange={handleImageUrlChange}
-                currentImage={imageUrl || formData.image_url}
+                currentImages={imageUrls.length > 0 ? imageUrls : (formData.image_url ? [formData.image_url] : [])}
+                maxImages={5}
               />
             </div>
           </div>

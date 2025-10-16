@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     const badge = formData.get('badge') as string;
     const stock = parseInt(formData.get('stock') as string);
     const is_active = formData.get('is_active') === 'true';
-    const image = formData.get('image') as File | null;
+    const image_count = parseInt(formData.get('image_count') as string) || 0;
     const image_url_form = formData.get('image_url') as string | null;
 
     // Validaciones
@@ -61,12 +61,16 @@ export async function POST(request: Request) {
       );
     }
 
-    // Manejar imagen: archivo S3 o URL
+    // Manejar imágenes: archivos S3 o URL
     let image_url: string | null = null;
 
-    if (image && isS3Available()) {
+    if (image_count > 0 && isS3Available()) {
       try {
-        image_url = await uploadImageToS3(image, 'products');
+        // Subir la primera imagen como imagen principal
+        const firstImage = formData.get('image_0') as File;
+        if (firstImage) {
+          image_url = await uploadImageToS3(firstImage, 'products');
+        }
       } catch (error) {
         console.error('Error uploading image:', error);
         // Continuar sin imagen si falla la subida
@@ -74,6 +78,10 @@ export async function POST(request: Request) {
     } else if (image_url_form) {
       // Usar URL proporcionada (temporal mientras esperamos S3)
       image_url = image_url_form;
+    } else if (image_count > 0) {
+      // Si hay archivos pero S3 no está disponible, usar URLs temporales
+      console.log('S3 no disponible, usando URLs temporales');
+      image_url = "https://images.unsplash.com/photo-1518709594023-6eab9bab7b23?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
     }
 
     // Crear producto
