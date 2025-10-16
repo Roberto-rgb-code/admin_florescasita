@@ -87,13 +87,6 @@ export default function LoginForm() {
             {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
           </button>
         </form>
-
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>Credenciales de prueba:</p>
-          <p className="font-mono text-xs mt-1">
-            admin@lacasitadelasflores.com / admin123
-          </p>
-        </div>
       </div>
     </div>
   );
