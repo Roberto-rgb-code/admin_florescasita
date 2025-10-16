@@ -1,0 +1,308 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+
+interface Product {
+  id: string;
+  title: string;
+  description?: string;
+  price: number;
+  stock: number;
+  category: string;
+  is_active: boolean;
+  image_url?: string;
+}
+
+export default function ProductsList() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const fetchProducts = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/products");
+      
+      if (!response.ok) {
+        throw new Error("Error al cargar los productos");
+      }
+
+      const data = await response.json();
+      setProducts(data.products || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error desconocido");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("¿Estás seguro de que quieres eliminar este producto?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/products/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al eliminar el producto");
+      }
+
+      setProducts(products.filter(p => p.id !== id));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Error desconocido");
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const filteredProducts = products.filter(
+    (product) =>
+      product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (isLoading) {
+    return (
+      <div className="w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="space-y-6">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-64 mb-6"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="card">
+                    <div className="card-body">
+                      <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-12">
+            <div className="card max-w-md mx-auto">
+              <div className="card-body text-center">
+                <div className="text-6xl mb-4">⚠️</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Error al cargar productos</h3>
+                <p className="text-gray-600">{error}</p>
+                <button onClick={fetchProducts} className="btn btn-primary mt-4">
+                  Reintentar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Productos</h1>
+              <p className="text-gray-600 mt-1">Gestiona tu inventario de flores</p>
+            </div>
+            <Link href="/admin/products/new" className="btn btn-primary w-full sm:w-auto">
+              <span className="mr-2">➕</span>
+              Nuevo Producto
+            </Link>
+          </div>
+
+          {/* Search and Filters */}
+          <div className="card">
+            <div className="card-body p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Buscar productos por nombre o categoría..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="form-input pl-12 w-full h-12 text-sm"
+                    />
+                    <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">🔍</span>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <button className="btn btn-secondary text-sm px-4 py-2 h-12">
+                    <span className="mr-2">🏷️</span>
+                    Filtros
+                  </button>
+                  <button className="btn btn-secondary text-sm px-4 py-2 h-12">
+                    <span className="mr-2">📊</span>
+                    Ordenar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Products */}
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="max-w-md mx-auto">
+                <div className="text-8xl mb-6">🌸</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  {searchQuery ? "No se encontraron productos" : "¡Comienza a agregar tus flores!"}
+                </h3>
+                <p className="text-gray-600 mb-8 text-lg">
+                  {searchQuery 
+                    ? "Intenta con otros términos de búsqueda"
+                    : "Agrega tu primer producto al catálogo y comienza a vender"
+                  }
+                </p>
+                <Link href="/admin/products/new" className="btn btn-primary btn-lg">
+                  <span className="mr-2">➕</span>
+                  Agregar Primer Producto
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+              {filteredProducts.map((product) => (
+                <div key={product.id} className="card hover:shadow-xl transition-all duration-300 hover:scale-105 group">
+                  <div className="card-body p-4">
+                    {/* Imagen del producto */}
+                    <div className="mb-4 relative overflow-hidden rounded-lg">
+                      {product.image_url ? (
+                        <img
+                          src={product.image_url}
+                          alt={product.title}
+                          className="w-full h-40 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-40 sm:h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
+                          <div className="text-center">
+                            <span className="text-4xl">📦</span>
+                            <p className="text-xs text-gray-500 mt-1">Sin imagen</p>
+                          </div>
+                        </div>
+                      )}
+                      {/* Badge de estado */}
+                      <div className="absolute top-2 right-2">
+                        <span className={`badge text-xs ${product.is_active ? 'badge-success' : 'badge-danger'}`}>
+                          {product.is_active ? 'Activo' : 'Inactivo'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Información del producto */}
+                    <div className="space-y-3">
+                      <div>
+                        <h3 className="text-base font-semibold text-gray-900 line-clamp-2 group-hover:text-pink-600 transition-colors">
+                          {product.title}
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-1">{product.category}</p>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <span className="text-xl font-bold text-gray-900">${product.price}</span>
+                        <div className="flex items-center space-x-1">
+                          <span className="text-sm text-gray-600">Stock:</span>
+                          <span className={`text-sm font-medium ${product.stock < 5 ? 'text-yellow-600' : 'text-gray-900'}`}>
+                            {product.stock}
+                          </span>
+                          {product.stock < 5 && <span className="text-yellow-600">⚠️</span>}
+                        </div>
+                      </div>
+
+                      {product.description && (
+                        <p className="text-sm text-gray-500 line-clamp-2">{product.description}</p>
+                      )}
+                    </div>
+
+                    {/* Botones de acción */}
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                      <div className="flex space-x-2">
+                        <Link
+                          href={`/admin/products/${product.id}/edit`}
+                          className="btn btn-sm btn-secondary flex-1"
+                        >
+                          <span className="mr-1">✏️</span>
+                          <span className="hidden sm:inline">Editar</span>
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(product.id)}
+                          className="btn btn-sm btn-danger flex-1"
+                        >
+                          <span className="mr-1">🗑️</span>
+                          <span className="hidden sm:inline">Eliminar</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="card hover:shadow-lg transition-shadow">
+              <div className="card-body text-center p-4 sm:p-6">
+                <div className="flex items-center justify-center w-14 h-14 bg-pink-100 rounded-xl mx-auto mb-4">
+                  <span className="text-2xl">📦</span>
+                </div>
+                <p className="text-3xl font-bold text-gray-900 mb-1">{products.length}</p>
+                <p className="text-sm text-gray-600 font-medium">Total Productos</p>
+              </div>
+            </div>
+            
+            <div className="card hover:shadow-lg transition-shadow">
+              <div className="card-body text-center p-4 sm:p-6">
+                <div className="flex items-center justify-center w-14 h-14 bg-green-100 rounded-xl mx-auto mb-4">
+                  <span className="text-2xl">✅</span>
+                </div>
+                <p className="text-3xl font-bold text-green-600 mb-1">{products.filter(p => p.is_active).length}</p>
+                <p className="text-sm text-gray-600 font-medium">Activos</p>
+              </div>
+            </div>
+            
+            <div className="card hover:shadow-lg transition-shadow">
+              <div className="card-body text-center p-4 sm:p-6">
+                <div className="flex items-center justify-center w-14 h-14 bg-blue-100 rounded-xl mx-auto mb-4">
+                  <span className="text-2xl">📊</span>
+                </div>
+                <p className="text-3xl font-bold text-blue-600 mb-1">{products.reduce((acc, p) => acc + (p.stock || 0), 0)}</p>
+                <p className="text-sm text-gray-600 font-medium">Stock Total</p>
+              </div>
+            </div>
+            
+            <div className="card hover:shadow-lg transition-shadow">
+              <div className="card-body text-center p-4 sm:p-6">
+                <div className="flex items-center justify-center w-14 h-14 bg-yellow-100 rounded-xl mx-auto mb-4">
+                  <span className="text-2xl">⚠️</span>
+                </div>
+                <p className="text-3xl font-bold text-yellow-600 mb-1">{products.filter(p => (p.stock || 0) < 5).length}</p>
+                <p className="text-sm text-gray-600 font-medium">Stock Bajo</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
