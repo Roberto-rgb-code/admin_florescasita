@@ -7,7 +7,7 @@ import { uploadImageToS3, deleteImageFromS3, isS3Available } from '@/lib/s3';
 // GET /api/products/[id] - Obtener un producto
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -19,7 +19,8 @@ export async function GET(
       );
     }
 
-    const product = await getProductById(params.id);
+    const { id } = await params;
+    const product = await getProductById(id);
 
     if (!product) {
       return NextResponse.json(
@@ -41,7 +42,7 @@ export async function GET(
 // PUT /api/products/[id] - Actualizar un producto
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -53,6 +54,7 @@ export async function PUT(
       );
     }
 
+    const { id } = await params;
     const formData = await request.formData();
     
     // Extraer datos del formulario
@@ -68,7 +70,7 @@ export async function PUT(
     const deleteOldImage = formData.get('deleteOldImage') === 'true';
 
     // Obtener producto actual
-    const currentProduct = await getProductById(params.id);
+    const currentProduct = await getProductById(id);
 
     if (!currentProduct) {
       return NextResponse.json(
@@ -117,7 +119,7 @@ export async function PUT(
     if (is_active !== undefined) updateData.is_active = is_active;
     if (image_url !== currentProduct.image_url) updateData.image_url = image_url;
 
-    const product = await updateProduct(params.id, updateData);
+    const product = await updateProduct(id, updateData);
 
     return NextResponse.json({ product });
   } catch (error) {
@@ -132,7 +134,7 @@ export async function PUT(
 // DELETE /api/products/[id] - Eliminar un producto
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -144,8 +146,9 @@ export async function DELETE(
       );
     }
 
+    const { id } = await params;
     // Obtener producto para eliminar su imagen
-    const product = await getProductById(params.id);
+    const product = await getProductById(id);
 
     if (!product) {
       return NextResponse.json(
@@ -164,7 +167,7 @@ export async function DELETE(
     }
 
     // Eliminar producto
-    await deleteProduct(params.id);
+    await deleteProduct(id);
 
     return NextResponse.json({ message: 'Producto eliminado exitosamente' });
   } catch (error) {
