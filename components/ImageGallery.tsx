@@ -39,7 +39,6 @@ export default function ImageGallery({ images, productName = 'Producto', classNa
         enableSwipe: true,
         enableDrag: true,
         thumbnail: true,
-        showThumbByDefault: false,
         autoplay: false,
         fullScreen: true,
         zoom: true,
