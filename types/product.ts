@@ -25,5 +25,7 @@ export interface ProductFormData {
   is_active: boolean;
 }
 
-export type ProductCreateInput = Omit<Product, 'id' | 'created_at' | 'updated_at' | 'rating' | 'reviews'>;
+export type ProductCreateInput = Omit<Product, 'id' | 'created_at' | 'updated_at' | 'rating' | 'reviews'> & {
+  additional_images?: string[] | null;
+};
 export type ProductUpdateInput = Partial<ProductCreateInput>;
