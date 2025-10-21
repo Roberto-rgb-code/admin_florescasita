@@ -39,8 +39,14 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
   const [imageUrls, setImageUrls] = useState<string[]>([]);
 
   const categories = [
-    "Amor", "Cumpleaños", "Aniversario", "Condolencias", 
-    "Graduación", "Nacimiento", "Amistad", "Agradecimiento", "Eventos"
+    { value: "amor", label: "Amor / Aniversario" },
+    { value: "cumpleaños", label: "Cumpleaños" },
+    { value: "amistad", label: "Amistad" },
+    { value: "agradecimiento", label: "Agradecimiento" },
+    { value: "graduacion", label: "Graduación" },
+    { value: "condolencias", label: "Condolencias" },
+    { value: "nacimiento", label: "Nacimiento" },
+    { value: "eventos", label: "Eventos" }
   ];
 
   useEffect(() => {
@@ -259,8 +265,8 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
                 >
                   <option value="">Selecciona una categoría</option>
                   {categories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
+                    <option key={cat.value} value={cat.value}>
+                      {cat.label}
                     </option>
                   ))}
                 </select>
