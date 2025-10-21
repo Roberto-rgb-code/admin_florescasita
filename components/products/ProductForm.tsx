@@ -40,7 +40,7 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
 
   const categories = [
     { value: "amor", label: "Amor / Aniversario" },
-    { value: "cumpleaños", label: "Cumpleaños" },
+    { value: "cumpleanos", label: "Cumpleaños" },
     { value: "amistad", label: "Amistad" },
     { value: "agradecimiento", label: "Agradecimiento" },
     { value: "graduacion", label: "Graduación" },
