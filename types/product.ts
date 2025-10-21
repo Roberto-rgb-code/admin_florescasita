@@ -4,7 +4,7 @@ export interface Product {
   description: string | null;
   price: number;
   image_url: string | null;
-  additional_images: string[] | null;
+  additional_images?: string[] | null;
   category: string | null;
   badge: string | null;
   rating: number;
@@ -25,7 +25,5 @@ export interface ProductFormData {
   is_active: boolean;
 }
 
-export type ProductCreateInput = Omit<Product, 'id' | 'created_at' | 'updated_at' | 'rating' | 'reviews'> & {
-  additional_images?: string[] | null;
-};
+export type ProductCreateInput = Omit<Product, 'id' | 'created_at' | 'updated_at' | 'rating' | 'reviews'>;
 export type ProductUpdateInput = Partial<ProductCreateInput>;
