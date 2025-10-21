@@ -17,7 +17,7 @@ export async function uploadImageToSupabase(
 
     // Subir a Supabase Storage
     const { data, error } = await supabaseAdmin.storage
-      .from('product-images')
+      .from('product-image')
       .upload(filePath, fileData, {
         contentType: file.type,
         cacheControl: '3600',
@@ -31,7 +31,7 @@ export async function uploadImageToSupabase(
 
     // Obtener URL pública
     const { data: urlData } = supabaseAdmin.storage
-      .from('product-images')
+      .from('product-image')
       .getPublicUrl(filePath);
 
     return urlData.publicUrl;
@@ -47,10 +47,10 @@ export async function deleteImageFromSupabase(imageUrl: string): Promise<void> {
     // Extraer el path del archivo de la URL
     const url = new URL(imageUrl);
     const pathParts = url.pathname.split('/');
-    const filePath = pathParts.slice(pathParts.indexOf('product-images') + 1).join('/');
+    const filePath = pathParts.slice(pathParts.indexOf('product-image') + 1).join('/');
 
     const { error } = await supabaseAdmin.storage
-      .from('product-images')
+      .from('product-image')
       .remove([filePath]);
 
     if (error) {
