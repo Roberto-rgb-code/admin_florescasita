@@ -42,24 +42,26 @@ export default function ImageGallery({ images, productName = 'Producto', classNa
         }
 
         // Create new gallery
-        lightGalleryRef.current = lightGallery(galleryRef.current, {
-          plugins: [lgThumbnail, lgZoom, lgAutoplay, lgFullscreen],
-          speed: 500,
-          download: false,
-          enableSwipe: true,
-          enableDrag: true,
-          thumbnail: true,
-          autoplay: false,
-          fullScreen: true,
-          zoom: true,
-          selector: '.gallery-item',
-          dynamic: true,
-          dynamicEl: images.map((image, index) => ({
-            src: image,
-            thumb: image,
-            subHtml: `<h4>${productName} - Imagen ${index + 1}</h4>`,
-          })),
-        });
+        if (galleryRef.current) {
+          lightGalleryRef.current = lightGallery(galleryRef.current, {
+            plugins: [lgThumbnail, lgZoom, lgAutoplay, lgFullscreen],
+            speed: 500,
+            download: false,
+            enableSwipe: true,
+            enableDrag: true,
+            thumbnail: true,
+            autoplay: false,
+            fullScreen: true,
+            zoom: true,
+            selector: '.gallery-item',
+            dynamic: true,
+            dynamicEl: images.map((image, index) => ({
+              src: image,
+              thumb: image,
+              subHtml: `<h4>${productName} - Imagen ${index + 1}</h4>`,
+            })),
+          });
+        }
       } catch (error) {
         console.error('Error loading lightGallery:', error);
       }
