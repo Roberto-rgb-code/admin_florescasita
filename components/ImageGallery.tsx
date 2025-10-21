@@ -1,18 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import lightGallery from 'lightgallery';
-import 'lightgallery/css/lightgallery.css';
-import 'lightgallery/css/lg-zoom.css';
-import 'lightgallery/css/lg-thumbnail.css';
-import 'lightgallery/css/lg-autoplay.css';
-import 'lightgallery/css/lg-fullscreen.css';
-
-// Import plugins
-import lgThumbnail from 'lg-thumbnail';
-import lgZoom from 'lg-zoom';
-import lgAutoplay from 'lg-autoplay';
-import lgFullscreen from 'lg-fullscreen';
+import { useEffect, useRef, useState } from 'react';
 
 interface ImageGalleryProps {
   images: string[];
@@ -23,41 +11,68 @@ interface ImageGalleryProps {
 export default function ImageGallery({ images, productName = 'Producto', className = '' }: ImageGalleryProps) {
   const galleryRef = useRef<HTMLDivElement>(null);
   const lightGalleryRef = useRef<any>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    if (galleryRef.current && images.length > 0) {
-      // Destroy existing gallery if it exists
-      if (lightGalleryRef.current) {
-        lightGalleryRef.current.destroy();
-      }
+    setIsClient(true);
+  }, []);
 
-      // Create new gallery
-      lightGalleryRef.current = lightGallery(galleryRef.current, {
-        plugins: [lgThumbnail, lgZoom, lgAutoplay, lgFullscreen],
-        speed: 500,
-        download: false,
-        enableSwipe: true,
-        enableDrag: true,
-        thumbnail: true,
-        autoplay: false,
-        fullScreen: true,
-        zoom: true,
-        selector: '.gallery-item',
-        dynamic: true,
-        dynamicEl: images.map((image, index) => ({
-          src: image,
-          thumb: image,
-          subHtml: `<h4>${productName} - Imagen ${index + 1}</h4>`,
-        })),
-      });
-    }
+  useEffect(() => {
+    if (!isClient || !galleryRef.current || images.length === 0) return;
+
+    // Import lightGallery dynamically only on client side
+    const initGallery = async () => {
+      try {
+        const lightGallery = (await import('lightgallery')).default;
+        const lgThumbnail = (await import('lg-thumbnail')).default;
+        const lgZoom = (await import('lg-zoom')).default;
+        const lgAutoplay = (await import('lg-autoplay')).default;
+        const lgFullscreen = (await import('lg-fullscreen')).default;
+
+        // Import CSS
+        await import('lightgallery/css/lightgallery.css');
+        await import('lightgallery/css/lg-zoom.css');
+        await import('lightgallery/css/lg-thumbnail.css');
+        await import('lightgallery/css/lg-autoplay.css');
+        await import('lightgallery/css/lg-fullscreen.css');
+
+        // Destroy existing gallery if it exists
+        if (lightGalleryRef.current) {
+          lightGalleryRef.current.destroy();
+        }
+
+        // Create new gallery
+        lightGalleryRef.current = lightGallery(galleryRef.current, {
+          plugins: [lgThumbnail, lgZoom, lgAutoplay, lgFullscreen],
+          speed: 500,
+          download: false,
+          enableSwipe: true,
+          enableDrag: true,
+          thumbnail: true,
+          autoplay: false,
+          fullScreen: true,
+          zoom: true,
+          selector: '.gallery-item',
+          dynamic: true,
+          dynamicEl: images.map((image, index) => ({
+            src: image,
+            thumb: image,
+            subHtml: `<h4>${productName} - Imagen ${index + 1}</h4>`,
+          })),
+        });
+      } catch (error) {
+        console.error('Error loading lightGallery:', error);
+      }
+    };
+
+    initGallery();
 
     return () => {
       if (lightGalleryRef.current) {
         lightGalleryRef.current.destroy();
       }
     };
-  }, [images, productName]);
+  }, [isClient, images, productName]);
 
   if (!images || images.length === 0) {
     return (
