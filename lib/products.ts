@@ -39,6 +39,7 @@ export async function createProduct(productData: ProductCreateInput): Promise<Pr
     description: productData.description,
     price: productData.price,
     image_url: productData.image_url,
+    additional_images: productData.additional_images || [],
     category: productData.category,
     badge: productData.badge,
     stock: productData.stock,

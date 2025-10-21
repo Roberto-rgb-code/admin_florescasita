@@ -63,13 +63,24 @@ export async function POST(request: Request) {
 
     // Manejar imágenes: archivos Supabase Storage o URL
     let image_url: string | null = null;
+    let additional_images: string[] = [];
 
     if (image_count > 0 && isSupabaseStorageAvailable()) {
       try {
-        // Subir la primera imagen como imagen principal
-        const firstImage = formData.get('image_0') as File;
-        if (firstImage) {
-          image_url = await uploadImageToSupabase(firstImage, 'products');
+        // Subir todas las imágenes
+        const imageUrls: string[] = [];
+        
+        for (let i = 0; i < image_count; i++) {
+          const imageFile = formData.get(`image_${i}`) as File;
+          if (imageFile) {
+            const uploadedUrl = await uploadImageToSupabase(imageFile, 'products');
+            imageUrls.push(uploadedUrl);
+          }
+        }
+        
+        if (imageUrls.length > 0) {
+          image_url = imageUrls[0]; // Primera imagen como principal
+          additional_images = imageUrls.slice(1); // Resto como adicionales
         }
       } catch (error) {
         console.error('Error uploading image to Supabase Storage:', error);
@@ -94,6 +105,7 @@ export async function POST(request: Request) {
       stock: stock || 0,
       is_active,
       image_url,
+      additional_images: additional_images.length > 0 ? additional_images : null,
     });
 
     return NextResponse.json({ product }, { status: 201 });

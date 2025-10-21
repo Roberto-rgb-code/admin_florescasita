@@ -4,6 +4,7 @@ export interface Product {
   description: string | null;
   price: number;
   image_url: string | null;
+  additional_images: string[] | null;
   category: string | null;
   badge: string | null;
   rating: number;

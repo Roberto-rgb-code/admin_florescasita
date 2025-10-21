@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS products (
   description TEXT,
   price DECIMAL(10,2) NOT NULL,
   image_url TEXT,
+  additional_images TEXT[], -- Array de URLs de imágenes adicionales
   category TEXT,
   badge TEXT,
   rating DECIMAL(2,1) DEFAULT 0,
