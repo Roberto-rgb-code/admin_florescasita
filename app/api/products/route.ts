@@ -105,7 +105,8 @@ export async function POST(request: Request) {
       stock: stock || 0,
       is_active,
       image_url,
-      additional_images: additional_images.length > 0 ? additional_images : null,
+      // TODO: Descomentar cuando se ejecute el script SQL
+      // additional_images: additional_images.length > 0 ? additional_images : null,
     });
 
     return NextResponse.json({ product }, { status: 201 });
