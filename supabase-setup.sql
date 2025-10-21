@@ -77,19 +77,23 @@ ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
 
 -- Permitir lectura pública de productos activos
+DROP POLICY IF EXISTS "Public can read active products" ON products;
 CREATE POLICY "Public can read active products" 
     ON products FOR SELECT 
     USING (is_active = true);
 
 -- Permitir todo para usuarios autenticados (admin)
+DROP POLICY IF EXISTS "Authenticated users can do everything on products" ON products;
 CREATE POLICY "Authenticated users can do everything on products" 
     ON products FOR ALL 
     USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Authenticated users can do everything on orders" ON orders;
 CREATE POLICY "Authenticated users can do everything on orders" 
     ON orders FOR ALL 
     USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Authenticated users can do everything on order_items" ON order_items;
 CREATE POLICY "Authenticated users can do everything on order_items" 
     ON order_items FOR ALL 
     USING (auth.role() = 'authenticated');

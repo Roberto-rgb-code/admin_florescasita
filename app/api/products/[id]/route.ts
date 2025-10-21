@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getProductById, updateProduct, deleteProduct } from '@/lib/products';
-import { uploadImageToS3, deleteImageFromS3, isS3Available } from '@/lib/s3';
+import { uploadImageToSupabase, deleteImageFromSupabase, isSupabaseStorageAvailable } from '@/lib/supabase-storage';
 
 // GET /api/products/[id] - Obtener un producto
 export async function GET(
@@ -82,29 +82,29 @@ export async function PUT(
     // Manejar imagen
     let image_url = currentProduct.image_url;
 
-    if (deleteOldImage && currentProduct.image_url && isS3Available()) {
+    if (deleteOldImage && currentProduct.image_url && isSupabaseStorageAvailable()) {
       try {
-        await deleteImageFromS3(currentProduct.image_url);
+        await deleteImageFromSupabase(currentProduct.image_url);
         image_url = null;
       } catch (error) {
         console.error('Error deleting old image:', error);
       }
     }
 
-    if (image && isS3Available()) {
+    if (image && isSupabaseStorageAvailable()) {
       try {
         // Eliminar imagen anterior si existe
         if (currentProduct.image_url) {
-          await deleteImageFromS3(currentProduct.image_url);
+          await deleteImageFromSupabase(currentProduct.image_url);
         }
         
         // Subir nueva imagen
-        image_url = await uploadImageToS3(image, 'products');
+        image_url = await uploadImageToSupabase(image, 'products');
       } catch (error) {
         console.error('Error uploading new image:', error);
       }
     } else if (image_url_form) {
-      // Usar URL proporcionada (temporal mientras esperamos S3)
+      // Usar URL proporcionada
       image_url = image_url_form;
     }
 
@@ -157,12 +157,25 @@ export async function DELETE(
       );
     }
 
-    // Eliminar imagen de S3 si existe
-    if (product.image_url && isS3Available()) {
+    // Eliminar imagen de Supabase Storage si existe
+    if (product.image_url && isSupabaseStorageAvailable()) {
       try {
-        await deleteImageFromS3(product.image_url);
+        await deleteImageFromSupabase(product.image_url);
+        console.log('Imagen eliminada del storage:', product.image_url);
       } catch (error) {
         console.error('Error deleting product image:', error);
+      }
+    }
+
+    // Eliminar imágenes adicionales si existen
+    if (product.additional_images && product.additional_images.length > 0 && isSupabaseStorageAvailable()) {
+      try {
+        for (const imageUrl of product.additional_images) {
+          await deleteImageFromSupabase(imageUrl);
+          console.log('Imagen adicional eliminada del storage:', imageUrl);
+        }
+      } catch (error) {
+        console.error('Error deleting additional images:', error);
       }
     }
 
