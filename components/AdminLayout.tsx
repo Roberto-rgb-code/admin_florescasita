@@ -12,6 +12,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Dashboard", href: "/admin/dashboard", icon: "📊" },
     { name: "Productos", href: "/admin/products", icon: "📦" },
     { name: "Agregar Producto", href: "/admin/products/new", icon: "➕" },
+    { name: "Ventas", href: "/admin/orders", icon: "🛒" },
+    { name: "Configuración", href: "/admin/settings", icon: "⚙️" },
   ];
 
   return (
@@ -62,6 +64,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <span className="text-lg">{item.icon}</span>
                 </Link>
               ))}
+            </div>
+
+            {/* Info Panel */}
+            <div className="hidden lg:flex items-center space-x-4 text-sm text-gray-600">
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span>Sistema Activo</span>
+              </div>
+              <div className="border-l border-gray-200 h-4"></div>
+              <div>
+                {new Date().toLocaleDateString('es-MX', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </div>
             </div>
 
             {/* User Menu */}

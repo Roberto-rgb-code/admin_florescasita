@@ -7,10 +7,10 @@ interface Product {
   id: string;
   title: string;
   price: number;
-  stock: number;
   is_active: boolean;
   category: string;
   image_url?: string;
+  additional_images?: string[];
 }
 
 export default function Dashboard() {
@@ -42,8 +42,8 @@ export default function Dashboard() {
 
   const totalProducts = products.length;
   const activeProducts = products.filter(p => p.is_active).length;
-  const totalStock = products.reduce((acc, p) => acc + (p.stock || 0), 0);
-  const lowStockProducts = products.filter(p => (p.stock || 0) < 5).length;
+  const totalRevenue = products.reduce((acc, p) => acc + p.price, 0);
+  const categories = [...new Set(products.map(p => p.category))];
 
   if (isLoading) {
     return (
@@ -134,11 +134,11 @@ export default function Dashboard() {
               <div className="card-body">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl">📊</span>
+                    <span className="text-2xl">🏷️</span>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Stock Total</p>
-                    <p className="text-2xl font-bold text-blue-600">{totalStock}</p>
+                    <p className="text-sm text-gray-600">Categorías</p>
+                    <p className="text-2xl font-bold text-blue-600">{categories.length}</p>
                   </div>
                 </div>
               </div>
@@ -147,16 +147,17 @@ export default function Dashboard() {
             <div className="card">
               <div className="card-body">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl">⚠️</span>
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                    <span className="text-2xl">💰</span>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Stock Bajo</p>
-                    <p className="text-2xl font-bold text-yellow-600">{lowStockProducts}</p>
+                    <p className="text-sm text-gray-600">Valor Catálogo</p>
+                    <p className="text-2xl font-bold text-purple-600">${totalRevenue.toLocaleString()}</p>
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
 
           {/* Quick Actions */}
@@ -177,12 +178,6 @@ export default function Dashboard() {
                     Ver Todos los Productos
                   </Link>
                   
-                  {lowStockProducts > 0 && (
-                    <Link href="/admin/products" className="w-full btn btn-warning flex items-center justify-center">
-                      <span className="mr-2">⚠️</span>
-                      Revisar Stock Bajo ({lowStockProducts})
-                    </Link>
-                  )}
                 </div>
               </div>
             </div>
@@ -217,7 +212,7 @@ export default function Dashboard() {
                         )}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-gray-900 truncate">{product.title}</p>
-                          <p className="text-sm text-gray-500">${product.price} • Stock: {product.stock}</p>
+                          <p className="text-sm text-gray-500">${product.price} • {product.category}</p>
                         </div>
                         <Link
                           href={`/admin/products/${product.id}/edit`}
@@ -234,6 +229,39 @@ export default function Dashboard() {
                         </Link>
                       </div>
                     )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="card-header">
+                <h2 className="text-lg font-semibold text-gray-900">Categorías</h2>
+              </div>
+              <div className="card-body">
+                {categories.length === 0 ? (
+                  <div className="text-center py-8">
+                    <div className="text-4xl mb-4">🏷️</div>
+                    <p className="text-gray-600">No hay categorías aún</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    {categories.map((category) => {
+                      const categoryProducts = products.filter(p => p.category === category);
+                      return (
+                        <div key={category} className="p-3 bg-gray-50 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium text-gray-900 capitalize">{category}</p>
+                              <p className="text-xs text-gray-500">{categoryProducts.length} productos</p>
+                            </div>
+                            <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
+                              <span className="text-sm">🌸</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
