@@ -53,7 +53,6 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
         title: product.title,
         description: product.description || "",
         price: product.price,
-        stock: product.stock,
         category: product.category || "",
         is_active: product.is_active,
         image_url: product.image_url || "",
@@ -104,7 +103,6 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
       formDataToSend.append("title", formData.title);
       formDataToSend.append("description", formData.description);
       formDataToSend.append("price", formData.price.toString());
-      formDataToSend.append("stock", formData.stock.toString());
       formDataToSend.append("category", formData.category);
       formDataToSend.append("is_active", formData.is_active.toString());
       
