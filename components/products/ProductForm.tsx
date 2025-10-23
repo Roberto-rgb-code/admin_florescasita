@@ -14,7 +14,6 @@ interface FormData {
   title: string;
   description: string;
   price: number;
-  stock: number;
   category: string;
   is_active: boolean;
   image_url: string;
@@ -27,7 +26,6 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
     title: "",
     description: "",
     price: 0,
-    stock: 0,
     category: "",
     is_active: true,
     image_url: "",
@@ -212,41 +210,23 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
               />
             </div>
 
-            {/* Precio y Stock */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-                  Precio (MXN) *
-                </label>
-                <input
-                  type="number"
-                  id="price"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  required
-                  min="0"
-                  step="0.01"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                  placeholder="0.00"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-2">
-                  Stock
-                </label>
-                <input
-                  type="number"
-                  id="stock"
-                  name="stock"
-                  value={formData.stock}
-                  onChange={handleInputChange}
-                  min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                  placeholder="0"
-                />
-              </div>
+            {/* Precio */}
+            <div>
+              <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
+                Precio (MXN) *
+              </label>
+              <input
+                type="number"
+                id="price"
+                name="price"
+                value={formData.price}
+                onChange={handleInputChange}
+                required
+                min="0"
+                step="0.01"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                placeholder="0.00"
+              />
             </div>
 
             {/* Categoría y Badge */}

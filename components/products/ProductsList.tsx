@@ -254,13 +254,6 @@ export default function ProductsList() {
 
                       <div className="flex items-center justify-between">
                         <span className="text-xl font-bold text-gray-900">${product.price}</span>
-                        <div className="flex items-center space-x-1">
-                          <span className="text-sm text-gray-600">Stock:</span>
-                          <span className={`text-sm font-medium ${product.stock < 5 ? 'text-yellow-600' : 'text-gray-900'}`}>
-                            {product.stock}
-                          </span>
-                          {product.stock < 5 && <span className="text-yellow-600">⚠️</span>}
-                        </div>
                       </div>
 
                       {product.description && (
@@ -294,7 +287,7 @@ export default function ProductsList() {
           )}
 
           {/* Stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <div className="card hover:shadow-lg transition-shadow">
               <div className="card-body text-center p-4 sm:p-6">
                 <div className="flex items-center justify-center w-14 h-14 bg-pink-100 rounded-xl mx-auto mb-4">
@@ -312,26 +305,6 @@ export default function ProductsList() {
                 </div>
                 <p className="text-3xl font-bold text-green-600 mb-1">{products.filter(p => p.is_active).length}</p>
                 <p className="text-sm text-gray-600 font-medium">Activos</p>
-              </div>
-            </div>
-            
-            <div className="card hover:shadow-lg transition-shadow">
-              <div className="card-body text-center p-4 sm:p-6">
-                <div className="flex items-center justify-center w-14 h-14 bg-blue-100 rounded-xl mx-auto mb-4">
-                  <span className="text-2xl">📊</span>
-                </div>
-                <p className="text-3xl font-bold text-blue-600 mb-1">{products.reduce((acc, p) => acc + (p.stock || 0), 0)}</p>
-                <p className="text-sm text-gray-600 font-medium">Stock Total</p>
-              </div>
-            </div>
-            
-            <div className="card hover:shadow-lg transition-shadow">
-              <div className="card-body text-center p-4 sm:p-6">
-                <div className="flex items-center justify-center w-14 h-14 bg-yellow-100 rounded-xl mx-auto mb-4">
-                  <span className="text-2xl">⚠️</span>
-                </div>
-                <p className="text-3xl font-bold text-yellow-600 mb-1">{products.filter(p => (p.stock || 0) < 5).length}</p>
-                <p className="text-sm text-gray-600 font-medium">Stock Bajo</p>
               </div>
             </div>
           </div>
