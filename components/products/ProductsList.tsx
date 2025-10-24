@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import ImageModal from "../ImageModal";
-import ImageGallery from "../ImageGallery";
+import ImageGalleryComponent from "../ImageGallery";
 
 interface Product {
   id: string;
@@ -208,7 +208,7 @@ export default function ProductsList() {
                     <div className="mb-4 relative overflow-hidden rounded-lg">
                       {product.image_url ? (
                         <div className="w-full h-40 sm:h-48">
-                          <ImageGallery 
+                          <ImageGalleryComponent 
                             images={[product.image_url, ...(product.additional_images || [])].filter(Boolean)}
                             productName={product.title}
                             className="w-full h-full"

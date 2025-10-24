@@ -12,6 +12,7 @@
     "@aws-sdk/client-s3": "^3.490.0",
     "@aws-sdk/s3-request-presigner": "^3.490.0",
     "@supabase/supabase-js": "^2.39.0",
+    "@types/react-image-gallery": "^1.2.4",
     "clsx": "^2.0.0",
     "date-fns": "^3.0.6",
     "lg-autoplay": "^1.2.1",
@@ -30,6 +31,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.48.2",
+    "react-image-gallery": "^1.4.0",
     "sharp": "^0.33.1",
     "stripe": "^14.10.0",
     "zustand": "^4.4.7"
