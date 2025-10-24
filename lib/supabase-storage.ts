@@ -34,6 +34,7 @@ export async function uploadImageToSupabase(
       .from('product-image')
       .getPublicUrl(filePath);
 
+    console.log('Generated URL:', urlData.publicUrl);
     return urlData.publicUrl;
   } catch (error) {
     console.error('Error in uploadImageToSupabase:', error);
