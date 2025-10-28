@@ -62,6 +62,8 @@ export async function POST(request: Request) {
     }
 
     // Manejar imágenes: archivos Supabase Storage o URL
+    let image_url: string | null = null;
+    let additional_images: string[] = [];
 
     // Crear producto primero para obtener el ID
     const product = await createProduct({

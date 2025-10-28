@@ -28,6 +28,7 @@ interface OrderStats {
 export default function Dashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [orderStats, setOrderStats] = useState<OrderStats | null>(null);
+  const [recentOrders, setRecentOrders] = useState<any[]>([]);
   const [isCleaningImages, setIsCleaningImages] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
