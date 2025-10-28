@@ -86,7 +86,7 @@ export default function ConfirmationModal({
   const styles = getTypeStyles();
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-[9999] overflow-y-auto">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
@@ -94,8 +94,8 @@ export default function ConfirmationModal({
       />
       
       {/* Modal */}
-      <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all w-full max-w-md">
+      <div className="flex min-h-full items-center justify-center p-4 relative z-[10000]">
+        <div className="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all w-full max-w-md z-[10001]">
           {/* Header */}
           <div className={`px-6 py-4 border-b ${styles.borderColor}`}>
             <div className="flex items-center space-x-3">
