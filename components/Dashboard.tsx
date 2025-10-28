@@ -91,100 +91,100 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="space-y-6">
+    <div className="w-full h-full">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+        <div className="space-y-6 lg:space-y-8">
           {/* Header */}
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600 mt-1">Panel de administración de La Casita de las Flores</p>
+            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">Dashboard</h1>
+            <p className="text-gray-600 mt-1 text-lg">Panel de administración de La Casita de las Flores</p>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <div className="card">
+            <div className="card hover:shadow-lg transition-shadow">
               <div className="card-body">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl">📦</span>
+                  <div className="w-12 h-12 lg:w-14 lg:h-14 bg-pink-100 rounded-lg flex items-center justify-center mr-4">
+                    <span className="text-2xl lg:text-3xl">📦</span>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Total Productos</p>
-                    <p className="text-2xl font-bold text-gray-900">{totalProducts}</p>
+                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">{totalProducts}</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="card">
+            <div className="card hover:shadow-lg transition-shadow">
               <div className="card-body">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl">✅</span>
+                  <div className="w-12 h-12 lg:w-14 lg:h-14 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                    <span className="text-2xl lg:text-3xl">✅</span>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Productos Activos</p>
-                    <p className="text-2xl font-bold text-green-600">{activeProducts}</p>
+                    <p className="text-2xl lg:text-3xl font-bold text-green-600">{activeProducts}</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="card">
+            <div className="card hover:shadow-lg transition-shadow">
               <div className="card-body">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl">🏷️</span>
+                  <div className="w-12 h-12 lg:w-14 lg:h-14 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                    <span className="text-2xl lg:text-3xl">🏷️</span>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Categorías</p>
-                    <p className="text-2xl font-bold text-blue-600">{categories.length}</p>
+                    <p className="text-2xl lg:text-3xl font-bold text-blue-600">{categories.length}</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="card">
+            <div className="card hover:shadow-lg transition-shadow">
               <div className="card-body">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl">💰</span>
+                  <div className="w-12 h-12 lg:w-14 lg:h-14 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                    <span className="text-2xl lg:text-3xl">💰</span>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Valor Catálogo</p>
-                    <p className="text-2xl font-bold text-purple-600">${totalRevenue.toLocaleString()}</p>
+                    <p className="text-2xl lg:text-3xl font-bold text-purple-600">${totalRevenue.toLocaleString()}</p>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
 
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-            <div className="card">
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
+            {/* Quick Actions */}
+            <div className="card hover:shadow-lg transition-shadow">
               <div className="card-header">
-                <h2 className="text-lg font-semibold text-gray-900">Acciones Rápidas</h2>
+                <h2 className="text-lg lg:text-xl font-semibold text-gray-900">Acciones Rápidas</h2>
               </div>
               <div className="card-body">
                 <div className="space-y-3">
-                  <Link href="/admin/products/new" className="w-full btn btn-primary flex items-center justify-center">
+                  <Link href="/admin/products/new" className="w-full btn btn-primary flex items-center justify-center py-3 text-base">
                     <span className="mr-2">➕</span>
                     Agregar Nuevo Producto
                   </Link>
                   
-                  <Link href="/admin/products" className="w-full btn btn-secondary flex items-center justify-center">
+                  <Link href="/admin/products" className="w-full btn btn-secondary flex items-center justify-center py-3 text-base">
                     <span className="mr-2">📦</span>
                     Ver Todos los Productos
                   </Link>
-                  
                 </div>
               </div>
             </div>
 
-            <div className="card">
+            {/* Recent Products */}
+            <div className="card hover:shadow-lg transition-shadow">
               <div className="card-header">
-                <h2 className="text-lg font-semibold text-gray-900">Productos Recientes</h2>
+                <h2 className="text-lg lg:text-xl font-semibold text-gray-900">Productos Recientes</h2>
               </div>
               <div className="card-body">
                 {products.length === 0 ? (
@@ -198,20 +198,20 @@ export default function Dashboard() {
                 ) : (
                   <div className="space-y-3">
                     {products.slice(0, 5).map((product) => (
-                      <div key={product.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                      <div key={product.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                         {product.image_url ? (
                           <img
                             src={product.image_url}
                             alt={product.title}
-                            className="w-10 h-10 rounded-lg object-cover"
+                            className="w-12 h-12 lg:w-14 lg:h-14 rounded-lg object-cover"
                           />
                         ) : (
-                          <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                          <div className="w-12 h-12 lg:w-14 lg:h-14 bg-gray-200 rounded-lg flex items-center justify-center">
                             <span className="text-lg">📦</span>
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">{product.title}</p>
+                          <p className="text-sm lg:text-base font-medium text-gray-900 truncate">{product.title}</p>
                           <p className="text-sm text-gray-500">${product.price} • {product.category}</p>
                         </div>
                         <Link
@@ -234,9 +234,10 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="card">
+            {/* Categories */}
+            <div className="card hover:shadow-lg transition-shadow">
               <div className="card-header">
-                <h2 className="text-lg font-semibold text-gray-900">Categorías</h2>
+                <h2 className="text-lg lg:text-xl font-semibold text-gray-900">Categorías</h2>
               </div>
               <div className="card-body">
                 {categories.length === 0 ? (
@@ -245,18 +246,18 @@ export default function Dashboard() {
                     <p className="text-gray-600">No hay categorías aún</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3">
                     {categories.map((category) => {
                       const categoryProducts = products.filter(p => p.category === category);
                       return (
-                        <div key={category} className="p-3 bg-gray-50 rounded-lg">
+                        <div key={category} className="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-sm font-medium text-gray-900 capitalize">{category}</p>
-                              <p className="text-xs text-gray-500">{categoryProducts.length} productos</p>
+                              <p className="text-sm lg:text-base font-medium text-gray-900 capitalize">{category}</p>
+                              <p className="text-xs lg:text-sm text-gray-500">{categoryProducts.length} productos</p>
                             </div>
-                            <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
-                              <span className="text-sm">🌸</span>
+                            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-pink-100 rounded-full flex items-center justify-center">
+                              <span className="text-sm lg:text-base">🌸</span>
                             </div>
                           </div>
                         </div>
