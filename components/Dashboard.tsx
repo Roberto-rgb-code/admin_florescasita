@@ -13,22 +13,50 @@ interface Product {
   additional_images?: string[];
 }
 
+interface OrderStats {
+  totalOrders: number;
+  totalRevenue: number;
+  pendingOrders: number;
+  paidOrders: number;
+  deliveredOrders: number;
+  cancelledOrders: number;
+  averageOrderValue: number;
+  ordersThisMonth: number;
+  revenueThisMonth: number;
+}
+
 export default function Dashboard() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [orderStats, setOrderStats] = useState<OrderStats | null>(null);
+  const [recentOrders, setRecentOrders] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProducts = async () => {
+  const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("/api/products");
       
-      if (!response.ok) {
+      // Fetch products
+      const productsResponse = await fetch("/api/products");
+      if (!productsResponse.ok) {
         throw new Error("Error al cargar los productos");
       }
+      const productsData = await productsResponse.json();
+      setProducts(productsData.products || []);
 
-      const data = await response.json();
-      setProducts(data.products || []);
+      // Fetch order stats
+      const statsResponse = await fetch("/api/orders?stats=true");
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json();
+        setOrderStats(statsData.stats);
+      }
+
+      // Fetch recent orders
+      const ordersResponse = await fetch("/api/orders?recent=true&limit=5");
+      if (ordersResponse.ok) {
+        const ordersData = await ordersResponse.json();
+        setRecentOrders(ordersData.orders || []);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
     } finally {
@@ -37,7 +65,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchData();
   }, []);
 
   const totalProducts = products.length;
@@ -119,12 +147,12 @@ export default function Dashboard() {
             <div className="card hover:shadow-lg transition-shadow">
               <div className="card-body">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 lg:w-14 lg:h-14 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl lg:text-3xl">✅</span>
+                  <div className="w-12 h-12 lg:w-14 lg:h-14 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                    <span className="text-2xl lg:text-3xl">🛒</span>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Productos Activos</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-green-600">{activeProducts}</p>
+                    <p className="text-sm text-gray-600">Total Órdenes</p>
+                    <p className="text-2xl lg:text-3xl font-bold text-blue-600">{orderStats?.totalOrders || 0}</p>
                   </div>
                 </div>
               </div>
@@ -133,12 +161,12 @@ export default function Dashboard() {
             <div className="card hover:shadow-lg transition-shadow">
               <div className="card-body">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 lg:w-14 lg:h-14 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl lg:text-3xl">🏷️</span>
+                  <div className="w-12 h-12 lg:w-14 lg:h-14 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                    <span className="text-2xl lg:text-3xl">💰</span>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Categorías</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-blue-600">{categories.length}</p>
+                    <p className="text-sm text-gray-600">Ingresos Totales</p>
+                    <p className="text-2xl lg:text-3xl font-bold text-green-600">${orderStats?.totalRevenue.toLocaleString() || '0'}</p>
                   </div>
                 </div>
               </div>
@@ -148,11 +176,11 @@ export default function Dashboard() {
               <div className="card-body">
                 <div className="flex items-center">
                   <div className="w-12 h-12 lg:w-14 lg:h-14 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl lg:text-3xl">💰</span>
+                    <span className="text-2xl lg:text-3xl">📊</span>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Valor Catálogo</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-purple-600">${totalRevenue.toLocaleString()}</p>
+                    <p className="text-sm text-gray-600">Ticket Promedio</p>
+                    <p className="text-2xl lg:text-3xl font-bold text-purple-600">${orderStats?.averageOrderValue.toFixed(0) || '0'}</p>
                   </div>
                 </div>
               </div>
@@ -181,54 +209,45 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Recent Products */}
+            {/* Recent Orders */}
             <div className="card hover:shadow-lg transition-shadow">
               <div className="card-header">
-                <h2 className="text-lg lg:text-xl font-semibold text-gray-900">Productos Recientes</h2>
+                <h2 className="text-lg lg:text-xl font-semibold text-gray-900">Órdenes Recientes</h2>
               </div>
               <div className="card-body">
-                {products.length === 0 ? (
+                {recentOrders.length === 0 ? (
                   <div className="text-center py-8">
-                    <div className="text-4xl mb-4">📦</div>
-                    <p className="text-gray-600 mb-4">No hay productos aún</p>
-                    <Link href="/admin/products/new" className="btn btn-primary">
-                      Agregar Primer Producto
-                    </Link>
+                    <div className="text-4xl mb-4">🛒</div>
+                    <p className="text-gray-600 mb-4">No hay órdenes aún</p>
+                    <p className="text-sm text-gray-500">Las órdenes aparecerán aquí cuando los clientes realicen compras</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {products.slice(0, 5).map((product) => (
-                      <div key={product.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        {product.image_url ? (
-                          <img
-                            src={product.image_url}
-                            alt={product.title}
-                            className="w-12 h-12 lg:w-14 lg:h-14 rounded-lg object-cover"
-                          />
-                        ) : (
-                          <div className="w-12 h-12 lg:w-14 lg:h-14 bg-gray-200 rounded-lg flex items-center justify-center">
-                            <span className="text-lg">📦</span>
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm lg:text-base font-medium text-gray-900 truncate">{product.title}</p>
-                          <p className="text-sm text-gray-500">${product.price} • {product.category}</p>
+                    {recentOrders.map((order) => (
+                      <div key={order.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <div className="w-12 h-12 lg:w-14 lg:h-14 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <span className="text-lg">🛒</span>
                         </div>
-                        <Link
-                          href={`/admin/products/${product.id}/edit`}
-                          className="btn btn-sm btn-secondary"
-                        >
-                          ✏️
-                        </Link>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm lg:text-base font-medium text-gray-900 truncate">
+                            {order.customer_name}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            ${order.total_amount.toLocaleString()} • {new Date(order.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <span className={`badge text-xs ${order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                          order.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                          {order.status === 'pending' ? 'Pendiente' : 
+                           order.status === 'paid' ? 'Pagado' : order.status}
+                        </span>
                       </div>
                     ))}
-                    {products.length > 5 && (
-                      <div className="text-center">
-                        <Link href="/admin/products" className="text-sm text-pink-600 hover:text-pink-700">
-                          Ver todos los productos ({products.length - 5} más)
-                        </Link>
-                      </div>
-                    )}
+                    <div className="text-center">
+                      <Link href="/admin/orders" className="text-sm text-pink-600 hover:text-pink-700">
+                        Ver todas las órdenes
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>

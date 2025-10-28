@@ -13,7 +13,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Productos", href: "/admin/products", icon: "📦", short: "Prod" },
     { name: "Agregar Producto", href: "/admin/products/new", icon: "➕", short: "Nuevo" },
     { name: "Ventas", href: "/admin/orders", icon: "🛒", short: "Ventas" },
-    { name: "Configuración", href: "/admin/settings", icon: "⚙️", short: "Config" },
   ];
 
   return (

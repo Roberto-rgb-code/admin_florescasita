@@ -149,14 +149,14 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header simple */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="w-full h-full">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+        {/* Header */}
+        <div className="text-center mb-8 lg:mb-12">
+          <h1 className="text-2xl lg:text-4xl font-bold text-gray-900 mb-2">
             {isEditing ? "Editar Producto" : "Nuevo Producto"}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-lg lg:text-xl">
             {isEditing 
               ? "Modifica la información del producto" 
               : "Agrega un nuevo producto a tu catálogo"
@@ -164,156 +164,162 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Error Alert */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-              {error}
-            </div>
-          )}
+        <div className="max-w-4xl mx-auto">
+          <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-8">
+            {/* Error Alert */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm lg:text-base">
+                {error}
+              </div>
+            )}
 
-          {/* Card principal */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
-            
-            {/* Título */}
-            <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                Título del Producto *
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                placeholder="Ej: 50 Rosas Rojas Premium"
-              />
-            </div>
+            {/* Card principal */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 lg:p-8 space-y-6 lg:space-y-8">
+              
+              {/* Grid de campos principales */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                {/* Título */}
+                <div className="lg:col-span-2">
+                  <label htmlFor="title" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+                    Título del Producto *
+                  </label>
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 lg:px-4 py-2 lg:py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-sm lg:text-base"
+                    placeholder="Ej: 50 Rosas Rojas Premium"
+                  />
+                </div>
 
-            {/* Descripción */}
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-                Descripción
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500 resize-none"
-                placeholder="Describe el producto..."
-              />
-            </div>
+                {/* Descripción */}
+                <div className="lg:col-span-2">
+                  <label htmlFor="description" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+                    Descripción
+                  </label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows={4}
+                    className="w-full px-3 lg:px-4 py-2 lg:py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500 resize-none text-sm lg:text-base"
+                    placeholder="Describe el producto..."
+                  />
+                </div>
 
-            {/* Precio */}
-            <div>
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-                Precio (MXN) *
-              </label>
-              <input
-                type="number"
-                id="price"
-                name="price"
-                value={formData.price}
-                onChange={handleInputChange}
-                required
-                min="0"
-                step="0.01"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                placeholder="0.00"
-              />
-            </div>
+                {/* Precio */}
+                <div>
+                  <label htmlFor="price" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+                    Precio (MXN) *
+                  </label>
+                  <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    required
+                    min="0"
+                    step="0.01"
+                    className="w-full px-3 lg:px-4 py-2 lg:py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-sm lg:text-base"
+                    placeholder="0.00"
+                  />
+                </div>
 
-            {/* Categoría y Badge */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-                  Categoría *
-                </label>
-                <select
-                  id="category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                >
-                  <option value="">Selecciona una categoría</option>
-                  {categories.map((cat) => (
-                    <option key={cat.value} value={cat.value}>
-                      {cat.label}
-                    </option>
-                  ))}
-                </select>
+                {/* Categoría */}
+                <div>
+                  <label htmlFor="category" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+                    Categoría *
+                  </label>
+                  <select
+                    id="category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 lg:px-4 py-2 lg:py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-sm lg:text-base"
+                  >
+                    <option value="">Selecciona una categoría</option>
+                    {categories.map((cat) => (
+                      <option key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Badge */}
+                <div>
+                  <label htmlFor="badge" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+                    Badge (Opcional)
+                  </label>
+                  <input
+                    type="text"
+                    id="badge"
+                    name="badge"
+                    value={formData.badge || ""}
+                    onChange={handleInputChange}
+                    className="w-full px-3 lg:px-4 py-2 lg:py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-sm lg:text-base"
+                    placeholder="Ej: Más vendido, Premium"
+                  />
+                </div>
+
+                {/* Estado activo */}
+                <div className="lg:col-span-2">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="is_active"
+                      name="is_active"
+                      checked={formData.is_active}
+                      onChange={handleInputChange}
+                      className="w-4 h-4 lg:w-5 lg:h-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                    />
+                    <label htmlFor="is_active" className="ml-2 text-sm lg:text-base text-gray-700">
+                      Producto activo (visible en la tienda)
+                    </label>
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <label htmlFor="badge" className="block text-sm font-medium text-gray-700 mb-2">
-                  Badge (Opcional)
+              {/* Imágenes */}
+              <div className="border-t border-gray-200 pt-6 lg:pt-8">
+                <label className="block text-sm lg:text-base font-medium text-gray-700 mb-4">
+                  Imágenes del Producto
                 </label>
-                <input
-                  type="text"
-                  id="badge"
-                  name="badge"
-                  value={formData.badge || ""}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                  placeholder="Ej: Más vendido, Premium"
+                <ImageUpload
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  currentImages={imageUrls.length > 0 ? imageUrls : (formData.image_url ? [formData.image_url] : [])}
+                  maxImages={5}
                 />
               </div>
             </div>
 
-            {/* Estado activo */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="is_active"
-                name="is_active"
-                checked={formData.is_active}
-                onChange={handleInputChange}
-                className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
-              />
-              <label htmlFor="is_active" className="ml-2 text-sm text-gray-700">
-                Producto activo (visible en la tienda)
-              </label>
+            {/* Botones */}
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                onClick={() => router.back()}
+                className="px-4 lg:px-6 py-2 lg:py-3 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors text-sm lg:text-base"
+              >
+                Cancelar
+              </button>
+              
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="px-6 lg:px-8 py-2 lg:py-3 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm lg:text-base"
+              >
+                {isLoading ? "Guardando..." : isEditing ? "Actualizar" : "Crear Producto"}
+              </button>
             </div>
-
-            {/* Imágenes */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Imágenes del Producto
-              </label>
-              <ImageUpload
-                onImageChange={handleImageChange}
-                onImageUrlChange={handleImageUrlChange}
-                currentImages={imageUrls.length > 0 ? imageUrls : (formData.image_url ? [formData.image_url] : [])}
-                maxImages={5}
-              />
-            </div>
-          </div>
-
-          {/* Botones */}
-          <div className="flex gap-3 justify-end">
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-            >
-              Cancelar
-            </button>
-            
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="px-6 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? "Guardando..." : isEditing ? "Actualizar" : "Crear Producto"}
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
