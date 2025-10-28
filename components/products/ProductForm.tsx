@@ -164,8 +164,9 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-8">
+        <div className="flex justify-center">
+          <div className="w-full max-w-4xl">
+            <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-8">
             {/* Error Alert */}
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm lg:text-base">
@@ -318,7 +319,8 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
                 {isLoading ? "Guardando..." : isEditing ? "Actualizar" : "Crear Producto"}
               </button>
             </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </div>
