@@ -10,7 +10,7 @@ const nextConfig = {
     ],
   },
   env: {
-    NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'http://localhost:3001',
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'https://admin.lacasitadelasflores.mx',
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   },
 }
