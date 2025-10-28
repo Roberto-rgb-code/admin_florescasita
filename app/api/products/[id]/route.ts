@@ -65,7 +65,7 @@ export async function PUT(
     const badge = formData.get('badge') as string;
     const stock = formData.get('stock') ? parseInt(formData.get('stock') as string) : undefined;
     const is_active = formData.get('is_active') === 'true';
-    const image = formData.get('image') as File | null;
+    const image_count = parseInt(formData.get('image_count') as string) || 0;
     const image_url_form = formData.get('image_url') as string | null;
     const deleteOldImage = formData.get('deleteOldImage') === 'true';
 
@@ -79,29 +79,50 @@ export async function PUT(
       );
     }
 
-    // Manejar imagen
+    // Manejar imágenes
     let image_url = currentProduct.image_url;
+    let additional_images = currentProduct.additional_images || [];
 
-    if (deleteOldImage && currentProduct.image_url && isSupabaseStorageAvailable()) {
+    // Eliminar imágenes anteriores si se solicita
+    if (deleteOldImage && isSupabaseStorageAvailable()) {
       try {
-        await deleteImageFromSupabase(currentProduct.image_url);
-        image_url = null;
+        // Eliminar imagen principal
+        if (currentProduct.image_url) {
+          await deleteImageFromSupabase(currentProduct.image_url);
+          image_url = null;
+        }
+        
+        // Eliminar imágenes adicionales
+        if (currentProduct.additional_images && currentProduct.additional_images.length > 0) {
+          for (const imageUrl of currentProduct.additional_images) {
+            await deleteImageFromSupabase(imageUrl);
+          }
+          additional_images = [];
+        }
       } catch (error) {
-        console.error('Error deleting old image:', error);
+        console.error('Error deleting old images:', error);
       }
     }
 
-    if (image && isSupabaseStorageAvailable()) {
+    // Manejar nuevas imágenes
+    if (image_count > 0 && isSupabaseStorageAvailable()) {
       try {
-        // Eliminar imagen anterior si existe
-        if (currentProduct.image_url) {
-          await deleteImageFromSupabase(currentProduct.image_url);
+        const imageUrls: string[] = [];
+        
+        for (let i = 0; i < image_count; i++) {
+          const imageFile = formData.get(`image_${i}`) as File;
+          if (imageFile) {
+            const uploadedUrl = await uploadImageToSupabase(imageFile, 'products', id);
+            imageUrls.push(uploadedUrl);
+          }
         }
         
-        // Subir nueva imagen
-        image_url = await uploadImageToSupabase(image, 'products');
+        if (imageUrls.length > 0) {
+          image_url = imageUrls[0]; // Primera imagen como principal
+          additional_images = imageUrls.slice(1); // Resto como adicionales
+        }
       } catch (error) {
-        console.error('Error uploading new image:', error);
+        console.error('Error uploading images:', error);
       }
     } else if (image_url_form) {
       // Usar URL proporcionada
@@ -118,6 +139,9 @@ export async function PUT(
     if (stock !== undefined) updateData.stock = stock;
     if (is_active !== undefined) updateData.is_active = is_active;
     if (image_url !== currentProduct.image_url) updateData.image_url = image_url;
+    if (JSON.stringify(additional_images) !== JSON.stringify(currentProduct.additional_images)) {
+      updateData.additional_images = additional_images.length > 0 ? additional_images : null;
+    }
 
     const product = await updateProduct(id, updateData);
 

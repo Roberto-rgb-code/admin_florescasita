@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import ImageModal from "../ImageModal";
 import ImageGalleryComponent from "../ImageGallery";
+import ConfirmationModal from "../ui/ConfirmationModal";
 
 interface Product {
   id: string;
@@ -27,6 +28,12 @@ export default function ProductsList() {
     images: string[];
     initialIndex: number;
   }>({ isOpen: false, images: [], initialIndex: 0 });
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    productId: string | null;
+    productTitle: string;
+    isLoading: boolean;
+  }>({ isOpen: false, productId: null, productTitle: "", isLoading: false });
 
   const fetchProducts = async () => {
     try {
@@ -46,13 +53,22 @@ export default function ProductsList() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("¿Estás seguro de que quieres eliminar este producto?")) {
-      return;
-    }
+  const handleDeleteClick = (id: string, title: string) => {
+    setDeleteModal({
+      isOpen: true,
+      productId: id,
+      productTitle: title,
+      isLoading: false
+    });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.productId) return;
+
+    setDeleteModal(prev => ({ ...prev, isLoading: true }));
 
     try {
-      const response = await fetch(`/api/products/${id}`, {
+      const response = await fetch(`/api/products/${deleteModal.productId}`, {
         method: "DELETE",
       });
 
@@ -60,10 +76,16 @@ export default function ProductsList() {
         throw new Error("Error al eliminar el producto");
       }
 
-      setProducts(products.filter(p => p.id !== id));
+      setProducts(products.filter(p => p.id !== deleteModal.productId));
+      setDeleteModal({ isOpen: false, productId: null, productTitle: "", isLoading: false });
     } catch (err) {
       alert(err instanceof Error ? err.message : "Error desconocido");
+      setDeleteModal(prev => ({ ...prev, isLoading: false }));
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModal({ isOpen: false, productId: null, productTitle: "", isLoading: false });
   };
 
   useEffect(() => {
@@ -272,7 +294,7 @@ export default function ProductsList() {
                           <span className="hidden sm:inline">Editar</span>
                         </Link>
                         <button
-                          onClick={() => handleDelete(product.id)}
+                          onClick={() => handleDeleteClick(product.id, product.title)}
                           className="btn btn-sm lg:btn btn-danger flex-1 py-2 lg:py-3 text-sm lg:text-base"
                         >
                           <span className="mr-1">🗑️</span>
@@ -317,6 +339,19 @@ export default function ProductsList() {
         images={imageModal.images}
         initialIndex={imageModal.initialIndex}
         onClose={() => setImageModal({ isOpen: false, images: [], initialIndex: 0 })}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Eliminar Producto"
+        message={`¿Estás seguro de que quieres eliminar "${deleteModal.productTitle}"? Esta acción no se puede deshacer y también se eliminarán todas las imágenes asociadas.`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        type="danger"
+        isLoading={deleteModal.isLoading}
       />
     </div>
   );

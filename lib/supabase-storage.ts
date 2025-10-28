@@ -3,12 +3,22 @@ import { supabaseAdmin } from './supabase';
 // Subir imagen a Supabase Storage
 export async function uploadImageToSupabase(
   file: File,
-  folder: string = 'products'
+  folder: string = 'products',
+  productId?: string
 ): Promise<string> {
   try {
-    // Generar nombre único para el archivo
+    // Generar nombre único para el archivo usando el ID del producto si está disponible
     const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const timestamp = Date.now();
+    const randomId = Math.random().toString(36).substring(2);
+    
+    let fileName: string;
+    if (productId) {
+      fileName = `${productId}-${timestamp}-${randomId}.${fileExt}`;
+    } else {
+      fileName = `${timestamp}-${randomId}.${fileExt}`;
+    }
+    
     const filePath = `${folder}/${fileName}`;
 
     // Convertir File a ArrayBuffer

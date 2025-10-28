@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { getProducts, createProduct } from '@/lib/products';
+import { getProducts, createProduct, updateProduct } from '@/lib/products';
 import { uploadImageToSupabase, isSupabaseStorageAvailable } from '@/lib/supabase-storage';
 
 // GET /api/products - Obtener todos los productos
@@ -62,40 +62,8 @@ export async function POST(request: Request) {
     }
 
     // Manejar imágenes: archivos Supabase Storage o URL
-    let image_url: string | null = null;
-    let additional_images: string[] = [];
 
-    if (image_count > 0 && isSupabaseStorageAvailable()) {
-      try {
-        // Subir todas las imágenes
-        const imageUrls: string[] = [];
-        
-        for (let i = 0; i < image_count; i++) {
-          const imageFile = formData.get(`image_${i}`) as File;
-          if (imageFile) {
-            const uploadedUrl = await uploadImageToSupabase(imageFile, 'products');
-            imageUrls.push(uploadedUrl);
-          }
-        }
-        
-        if (imageUrls.length > 0) {
-          image_url = imageUrls[0]; // Primera imagen como principal
-          additional_images = imageUrls.slice(1); // Resto como adicionales
-        }
-      } catch (error) {
-        console.error('Error uploading image to Supabase Storage:', error);
-        // Continuar sin imagen si falla la subida
-      }
-    } else if (image_url_form) {
-      // Usar URL proporcionada
-      image_url = image_url_form;
-    } else if (image_count > 0) {
-      // Si hay archivos pero no se puede subir, usar imagen por defecto
-      console.log('No se pudo subir la imagen, usando imagen por defecto');
-      image_url = "/flores_hero1.jpeg";
-    }
-
-    // Crear producto
+    // Crear producto primero para obtener el ID
     const product = await createProduct({
       title,
       description: description || null,
@@ -104,10 +72,49 @@ export async function POST(request: Request) {
       badge: badge || null,
       stock: stock || 0,
       is_active,
-      image_url,
-      // TODO: Descomentar cuando se ejecute el script SQL
-      // additional_images: additional_images.length > 0 ? additional_images : null,
+      image_url: null, // Temporalmente null
+      additional_images: null, // Temporalmente null
     });
+
+    // Ahora subir las imágenes con el ID del producto
+    if (image_count > 0 && isSupabaseStorageAvailable()) {
+      try {
+        const imageUrls: string[] = [];
+        
+        for (let i = 0; i < image_count; i++) {
+          const imageFile = formData.get(`image_${i}`) as File;
+          if (imageFile) {
+            const uploadedUrl = await uploadImageToSupabase(imageFile, 'products', product.id);
+            imageUrls.push(uploadedUrl);
+          }
+        }
+        
+        if (imageUrls.length > 0) {
+          image_url = imageUrls[0]; // Primera imagen como principal
+          additional_images = imageUrls.slice(1); // Resto como adicionales
+          
+          // Actualizar el producto con las imágenes
+          await updateProduct(product.id, {
+            image_url,
+            additional_images: additional_images.length > 0 ? additional_images : null,
+          });
+        }
+      } catch (error) {
+        console.error('Error uploading image to Supabase Storage:', error);
+        // Continuar sin imagen si falla la subida
+      }
+    } else if (image_url_form) {
+      // Usar URL proporcionada
+      await updateProduct(product.id, {
+        image_url: image_url_form,
+      });
+    } else if (image_count > 0) {
+      // Si hay archivos pero no se puede subir, usar imagen por defecto
+      console.log('No se pudo subir la imagen, usando imagen por defecto');
+      await updateProduct(product.id, {
+        image_url: "/flores_hero1.jpeg",
+      });
+    }
 
     return NextResponse.json({ product }, { status: 201 });
   } catch (error) {

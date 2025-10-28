@@ -28,7 +28,7 @@ interface OrderStats {
 export default function Dashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [orderStats, setOrderStats] = useState<OrderStats | null>(null);
-  const [recentOrders, setRecentOrders] = useState<any[]>([]);
+  const [isCleaningImages, setIsCleaningImages] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,9 +64,29 @@ export default function Dashboard() {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const handleCleanupImages = async () => {
+    if (!confirm('¿Estás seguro de que quieres limpiar las imágenes huérfanas? Esta acción eliminará todas las imágenes que no estén asociadas a productos.')) {
+      return;
+    }
+
+    setIsCleaningImages(true);
+    try {
+      const response = await fetch('/api/admin/cleanup-images', {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al limpiar imágenes');
+      }
+
+      const result = await response.json();
+      alert(result.message);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Error desconocido');
+    } finally {
+      setIsCleaningImages(false);
+    }
+  };
 
   const totalProducts = products.length;
   const activeProducts = products.filter(p => p.is_active).length;
@@ -205,6 +225,15 @@ export default function Dashboard() {
                     <span className="mr-2">📦</span>
                     Ver Todos los Productos
                   </Link>
+                  
+                  <button
+                    onClick={handleCleanupImages}
+                    disabled={isCleaningImages}
+                    className="w-full btn btn-warning flex items-center justify-center py-3 text-base disabled:opacity-50"
+                  >
+                    <span className="mr-2">{isCleaningImages ? '⏳' : '🧹'}</span>
+                    {isCleaningImages ? 'Limpiando...' : 'Limpiar Imágenes Huérfanas'}
+                  </button>
                 </div>
               </div>
             </div>
