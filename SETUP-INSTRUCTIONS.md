@@ -90,7 +90,7 @@ Credenciales de prueba:
    - Nombre: "Rosas Rojas Premium"
    - Descripción: "Hermoso ramo de 12 rosas rojas"
    - Precio: 1299
-   - Categoría: "Amor"
+   - Categoría: "Best sellers"
    - Stock: 10
 4. ⚠️ **NO subas imagen todavía** (espera AWS)
 5. Clic en **Crear Producto**

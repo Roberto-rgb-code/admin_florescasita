@@ -100,10 +100,10 @@ CREATE POLICY "Authenticated users can do everything on order_items"
 
 -- Insertar productos de ejemplo (opcional)
 INSERT INTO products (title, description, price, category, badge, stock, is_active, image_url) VALUES
-('Lenu', 'Hermoso arreglo floral con flores frescas de temporada', 990.00, 'amor', 'Favorito', 15, true, null),
-('Green Garden Large', 'Arreglo grande con flores verdes y blancas', 1590.00, 'cumpleaños', null, 10, true, null),
-('Ramo de flores rosas Madisson', 'Elegante ramo de rosas rosadas frescas', 929.00, 'amor', null, 20, true, null),
-('Amazing Para cualquier ocasión', 'Arreglo versátil perfecto para cualquier momento', 1329.00, 'eventos', null, 12, true, null)
+('Lenu', 'Hermoso arreglo floral con flores frescas de temporada', 990.00, 'best-sellers', 'Favorito', 15, true, null),
+('Green Garden Large', 'Arreglo grande con flores verdes y blancas', 1590.00, 'ramos-y-bouquets', null, 10, true, null),
+('Ramo de flores rosas Madisson', 'Elegante ramo de rosas rosadas frescas', 929.00, 'best-sellers', null, 20, true, null),
+('Amazing Para cualquier ocasión', 'Arreglo versátil perfecto para cualquier momento', 1329.00, 'mix-floral', null, 12, true, null)
 ON CONFLICT DO NOTHING;
 
 -- Comentarios de las tablas

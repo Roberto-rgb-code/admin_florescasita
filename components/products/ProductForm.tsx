@@ -37,14 +37,16 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
   const [imageUrls, setImageUrls] = useState<string[]>([]);
 
   const categories = [
-    { value: "amor", label: "Amor / Aniversario" },
-    { value: "cumpleanos", label: "Cumpleaños" },
-    { value: "amistad", label: "Amistad" },
-    { value: "agradecimiento", label: "Agradecimiento" },
-    { value: "graduacion", label: "Graduación" },
-    { value: "condolencias", label: "Condolencias" },
-    { value: "nacimiento", label: "Nacimiento" },
-    { value: "eventos", label: "Eventos" }
+    { value: "best-sellers", label: "Best sellers" },
+    { value: "ramos-y-bouquets", label: "Ramos y bouquets" },
+    { value: "mix-floral", label: "Mix Floral" },
+    { value: "corazones", label: "Corazones" },
+    { value: "baules", label: "Baules" },
+    { value: "cajas-circulares", label: "Cajas circulares" },
+    { value: "para-ellos", label: "Para ellos" },
+    { value: "globos", label: "Globos" },
+    { value: "peluches", label: "Peluches" },
+    { value: "pasteles", label: "Pasteles" }
   ];
 
   useEffect(() => {
