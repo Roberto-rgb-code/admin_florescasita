@@ -303,6 +303,39 @@ export default function OrdersList() {
                           </div>
                         </div>
 
+                        {/* Información de envío */}
+                        {order.shipping_address && typeof order.shipping_address === 'object' && (
+                          <div className="mt-4 pt-4 border-t border-gray-200">
+                            <p className="font-medium text-gray-700 mb-2">Información de entrega:</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                              {(order.shipping_address as any)?.address && (
+                                <div>
+                                  <p className="font-medium text-gray-700">Dirección</p>
+                                  <p className="text-gray-600 truncate">{(order.shipping_address as any).address}</p>
+                                </div>
+                              )}
+                              {(order.shipping_address as any)?.distance !== undefined && (order.shipping_address as any).distance !== null && (
+                                <div>
+                                  <p className="font-medium text-gray-700">Distancia</p>
+                                  <p className="text-gray-600">{(order.shipping_address as any).distance} km</p>
+                                </div>
+                              )}
+                              {(order.shipping_address as any)?.shippingCost !== undefined && (
+                                <div>
+                                  <p className="font-medium text-gray-700">Costo envío</p>
+                                  <p className="text-gray-600">${((order.shipping_address as any).shippingCost || 0).toLocaleString()}</p>
+                                </div>
+                              )}
+                              {order.delivery_date && (
+                                <div>
+                                  <p className="font-medium text-gray-700">Fecha entrega</p>
+                                  <p className="text-gray-600">{new Date(order.delivery_date).toLocaleDateString('es-MX')}</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
                         {/* Order Items */}
                         <div className="mt-4">
                           <p className="font-medium text-gray-700 mb-2">Productos:</p>
