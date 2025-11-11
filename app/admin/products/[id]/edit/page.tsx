@@ -23,7 +23,7 @@ export default async function EditProductPage({ params }: Props) {
         <p className="text-gray-600">Actualiza la información del producto</p>
       </div>
 
-      <ProductForm product={product} />
+      <ProductForm product={product} isEditing />
     </div>
   );
 }
