@@ -65,6 +65,10 @@ export default function Dashboard() {
     }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const handleCleanupImages = async () => {
     if (!confirm('¿Estás seguro de que quieres limpiar las imágenes huérfanas? Esta acción eliminará todas las imágenes que no estén asociadas a productos.')) {
       return;
