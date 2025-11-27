@@ -203,15 +203,25 @@ export async function DELETE(
       }
     }
 
-    // Eliminar producto
+    // Eliminar producto (esto también eliminará los order_items relacionados)
     await deleteProduct(id);
 
+    console.log('✅ Producto eliminado exitosamente:', id);
     return NextResponse.json({ message: 'Producto eliminado exitosamente' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in DELETE /api/products/[id]:', error);
+    console.error('Error details:', JSON.stringify(error, null, 2));
+    
+    // Proporcionar un mensaje de error más específico
+    const errorMessage = error?.message || 'Error al eliminar el producto';
+    const statusCode = error?.code === 'PGRST116' ? 404 : 500;
+    
     return NextResponse.json(
-      { error: 'Error al eliminar el producto' },
-      { status: 500 }
+      { 
+        error: errorMessage,
+        details: error?.details || error?.hint || null
+      },
+      { status: statusCode }
     );
   }
 }

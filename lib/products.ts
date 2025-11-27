@@ -89,14 +89,50 @@ export async function updateProduct(
 
 // Eliminar un producto
 export async function deleteProduct(id: string): Promise<void> {
-  const { error } = await supabaseAdmin
+  // Primero, eliminar todos los order_items relacionados
+  // Esto es necesario si la foreign key no tiene ON DELETE CASCADE
+  try {
+    const { error: orderItemsError } = await supabaseAdmin
+      .from('order_items')
+      .delete()
+      .eq('product_id', id);
+    
+    if (orderItemsError) {
+      console.error('Error deleting order_items:', orderItemsError);
+      // No lanzamos error aquí, podría no haber order_items
+      // Solo lo logueamos
+    } else {
+      console.log('Order items relacionados eliminados exitosamente');
+    }
+  } catch (err) {
+    console.warn('Warning: No se pudieron eliminar order_items (puede ser que no existan):', err);
+  }
+
+  // Ahora eliminar el producto
+  const { error, data } = await supabaseAdmin
     .from('products')
     .delete()
-    .eq('id', id);
+    .eq('id', id)
+    .select();
 
   if (error) {
     console.error('Error deleting product:', error);
-    throw new Error('Error al eliminar el producto');
+    console.error('Error code:', error.code);
+    console.error('Error message:', error.message);
+    console.error('Error details:', error.details);
+    console.error('Error hint:', error.hint);
+    
+    // Si es un error de foreign key constraint
+    if (error.code === '23503') {
+      throw new Error('No se puede eliminar el producto porque tiene órdenes asociadas. Primero elimina las órdenes relacionadas.');
+    }
+    
+    throw new Error(`Error al eliminar el producto: ${error.message}`);
+  }
+
+  // Verificar que se eliminó correctamente
+  if (!data || data.length === 0) {
+    throw new Error('El producto no fue encontrado o ya fue eliminado');
   }
 }
 

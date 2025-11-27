@@ -73,7 +73,10 @@ export default function ProductsList() {
       });
 
       if (!response.ok) {
-        throw new Error("Error al eliminar el producto");
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error || "Error al eliminar el producto";
+        const errorDetails = errorData.details ? `\n\nDetalles: ${errorData.details}` : '';
+        throw new Error(errorMessage + errorDetails);
       }
 
       setProducts(products.filter(p => p.id !== deleteModal.productId));
